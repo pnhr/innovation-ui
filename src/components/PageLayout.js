@@ -16,7 +16,7 @@ import {
     PoweroffOutlined
 } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
-
+import { Link } from 'react-router-dom';
 const { Header, Sider, Content } = Layout;
 
 
@@ -142,7 +142,7 @@ export const PageLayout = (props) => {
                     </AuthenticatedTemplate>
                     <UnauthenticatedTemplate>
                         <Card type="inner" title={<span style={{ color: 'red' }}>Please Login!</span>} style={{ width: '100%' }}>
-                            <p>You have not logged in yet. Please log to see your ideas.</p>
+                            <p>You have not logged in yet. Please <span onClick={handleLogin} style={{ color: 'blue', cursor: 'pointer' }}>login</span> to see your ideas.</p>
                         </Card>
                     </UnauthenticatedTemplate>
                 </Content>

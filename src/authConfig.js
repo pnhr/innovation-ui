@@ -56,10 +56,10 @@ export const msalConfig = {
  * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/resources-and-scopes.md
  */
 export const protectedResources = {
-    apiInnovation: {
+    apiTodoList: {
         endpoint: "https://ps-innovation.azure-api.net/innovation/api/Idea/getideas",
         scopes: {
-            appuser: ["api://b83d96f7-2e26-44be-9a9e-0577fc6444a8/AppUser"]
+            read: ["api://b83d96f7-2e26-44be-9a9e-0577fc6444a8/AppUser"]
         }
     }
 }
@@ -71,5 +71,5 @@ export const protectedResources = {
  * https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#openid-connect-scopes
  */
 export const loginRequest = {
-    scopes: [...protectedResources.apiInnovation.scopes.appuser]
+    scopes: [...protectedResources.apiTodoList.scopes.read]
 };

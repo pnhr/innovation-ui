@@ -1,6 +1,6 @@
 body {
   font-family: var(--font-family);
-  font-size: 0.75em;
+  font-size: var(--font-default-size);
   margin: 0;
   padding: 0;
 }
@@ -50,4 +50,11 @@ body {
 .header-login-content p {
   text-align: end;
   margin-right: 1em;
+}
+
+.loding {
+  display: flex;
+  justify-content: center;
+  margin: 1em;
+  height: calc(100vh - 15em);
 }

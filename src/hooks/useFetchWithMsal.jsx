@@ -2,9 +2,9 @@ import {
     useState,
     useCallback,
 } from 'react';
-import { protectedResources } from "../authConfig"
+
 import { InteractionType, PopupRequest } from '@azure/msal-browser';
-import { useMsal, useMsalAuthentication, useIsAuthenticated } from "@azure/msal-react";
+import { useMsal, useMsalAuthentication } from "@azure/msal-react";
 
 /**
  * Custom hook to call a web API using bearer token obtained from MSAL
@@ -12,18 +12,18 @@ import { useMsal, useMsalAuthentication, useIsAuthenticated } from "@azure/msal-
  * @returns 
  */
 const useFetchWithMsal = (msalRequest) => {
-    const { instance, accounts, inProgress } = useMsal();
+    const { instance } = useMsal();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [data, setData] = useState(null);
 
-    const { login, result, error: msalError } = useMsalAuthentication(InteractionType.Popup, {
+    const { result, error: msalError } = useMsalAuthentication(InteractionType.Popup, {
         ...msalRequest,
         account: instance.getActiveAccount(),
         redirectUri: '/redirect'
     });
 
-    const isAuthenticated = useIsAuthenticated();
+
 
     /**
      * Execute a fetch request with the given options
@@ -33,11 +33,10 @@ const useFetchWithMsal = (msalRequest) => {
      * @returns JSON response
      */
     const execute = async (method, endpoint, data = null) => {
-
-        const request = {
-            account: accounts[0],
-            scopes: protectedResources.apiInnovation.scopes.appuser
-        };
+        if (msalError) {
+            setError(msalError);
+            return;
+        }
 
         if (result) {
             try {
@@ -67,7 +66,7 @@ const useFetchWithMsal = (msalRequest) => {
             } catch (e) {
                 setError(e);
                 setIsLoading(false);
-                console.error("Error in execute : ", e);
+                throw e;
             }
         }
     };
@@ -76,7 +75,7 @@ const useFetchWithMsal = (msalRequest) => {
         isLoading,
         error,
         data,
-        execute: useCallback(execute, []), // to avoid infinite calls when inside a `useEffect`
+        execute: useCallback(execute, [result, msalError]), // to avoid infinite calls when inside a `useEffect`
     };
 };
 

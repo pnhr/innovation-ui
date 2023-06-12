@@ -1,6 +1,9 @@
+import "../style/lighttheme.css"
+
 import React, { useState } from 'react';
-import '../theme/lighttheme.css'
-import { Button, Layout, Menu, theme } from 'antd';
+import { Button, Layout, Menu, theme, Card } from 'antd';
+import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from "@azure/msal-react";
+import { loginRequest } from "../authConfig";
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -9,10 +12,10 @@ import {
     PlusSquareOutlined,
     UnorderedListOutlined,
     LoginOutlined,
-    LogoutOutlined
+    LogoutOutlined,
+    PoweroffOutlined
 } from '@ant-design/icons';
-import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
-import { loginRequest } from '../authConfig';
+import { useNavigate } from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
 
@@ -22,11 +25,14 @@ export const PageLayout = (props) => {
     const [collapsed, setCollapsed] = useState(false);
     const { token: { colorBgContainer } } = theme.useToken();
 
-    const handleLoginRedirect = () => {
-        instance.loginPopup(loginRequest)
-            .catch((error) => console.log(error));
-    };
+    const navigate = useNavigate();
 
+    const handleLogin = () => {
+        instance.loginPopup({
+            ...loginRequest,
+            redirectUri: '/redirect'
+        }).catch((error) => console.log(error));
+    }
     const handleLogOutRedirect = () => {
         instance.logoutRedirect({
             account: instance.getActiveAccount(),
@@ -49,19 +55,22 @@ export const PageLayout = (props) => {
                     theme="dark"
                     mode="inline"
                     defaultSelectedKeys={['1']}
+                    onClick={({ key }) => {
+                        navigate(key);
+                    }}
                     items={[
                         {
-                            key: '1',
+                            key: '/createidea',
                             icon: <PlusSquareOutlined />,
-                            label: 'Create Idea',
+                            label: 'Create Idea'
                         },
                         {
-                            key: '2',
+                            key: '/',
                             icon: <UnorderedListOutlined />,
                             label: 'My Ideas',
                         },
                         {
-                            key: '3',
+                            key: '/reviewideas',
                             icon: <UnorderedListOutlined />,
                             label: 'My Review',
                         },
@@ -91,12 +100,13 @@ export const PageLayout = (props) => {
                             <p>Hello, {activeAccount ? activeAccount.name : 'Unknown'}!</p>
                             <Button
                                 type="text"
-                                icon={<LogoutOutlined />}
+                                icon={<PoweroffOutlined />}
                                 onClick={handleLogOutRedirect}
                                 style={{
                                     fontSize: '16px',
                                     width: 64,
-                                    height: 64
+                                    height: 64,
+                                    color: 'red'
                                 }}
                             />
                         </div>
@@ -106,7 +116,7 @@ export const PageLayout = (props) => {
                             <Button
                                 type="text"
                                 icon={<LoginOutlined />}
-                                onClick={handleLoginRedirect}
+                                onClick={handleLogin}
                                 style={{
                                     fontSize: '16px',
                                     width: 64,
@@ -127,7 +137,14 @@ export const PageLayout = (props) => {
                         background: colorBgContainer,
                     }}
                 >
-                    {props.children}
+                    <AuthenticatedTemplate>
+                        {props.children}
+                    </AuthenticatedTemplate>
+                    <UnauthenticatedTemplate>
+                        <Card type="inner" title={<span style={{ color: 'red' }}>Please Login!</span>} style={{ width: '100%' }}>
+                            <p>You have not logged in yet. Please log to see your ideas.</p>
+                        </Card>
+                    </UnauthenticatedTemplate>
                 </Content>
             </Layout>
         </Layout>

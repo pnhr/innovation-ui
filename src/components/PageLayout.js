@@ -7,12 +7,10 @@ import { loginRequest } from "../authConfig";
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    UploadOutlined,
-    UserOutlined,
+    FormOutlined,
     PlusSquareOutlined,
     UnorderedListOutlined,
     LoginOutlined,
-    LogoutOutlined,
     PoweroffOutlined
 } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
@@ -71,7 +69,7 @@ export const PageLayout = (props) => {
                         },
                         {
                             key: '/reviewideas',
-                            icon: <UnorderedListOutlined />,
+                            icon: <FormOutlined />,
                             label: 'My Review',
                         },
                     ]}

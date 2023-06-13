@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Form, Input, notification } from 'antd';
 import useFetchWithMsal from '../hooks/useFetchWithMsal';
 import { loginRequest, protectedResources } from "../authConfig";
@@ -7,6 +7,8 @@ import { BASE_URI } from '../config';
 export const CreateIdea = () => {
     const [form] = Form.useForm();
     //const [api, contextHolder] = notification.useNotification();
+
+    const [isSaving, setIsSaving] = useState(false);
 
     const { isLoading, error, execute } = useFetchWithMsal({
         scopes: protectedResources.apiTodoList.scopes.read,
@@ -29,13 +31,14 @@ export const CreateIdea = () => {
     }
 
     const submitForm = () => {
+        setIsSaving(true);
         form.validateFields()
             .then(async (formObj) => {
                 console.log("Submit Form : ", formObj)
                 let endpoint = BASE_URI + "/api/Idea/createidea";;
                 let resp = await execute("POST", endpoint, formObj)
                 console.log("Idea Id genarated : ", resp?.payload.ideaid);
-
+                setIsSaving(false);
                 notification.success({
                     message: 'Idea Created!',
                     description:
@@ -45,6 +48,7 @@ export const CreateIdea = () => {
                 form.resetFields();
             })
             .catch((errorInfo) => {
+                setIsSaving(false);
                 console.error("Error On submitForm : ", errorInfo);
                 notification.error({
                     message: 'Error!',
@@ -73,7 +77,7 @@ export const CreateIdea = () => {
                 <Input placeholder="enter idea description" />
             </Form.Item>
             <Form.Item {...buttonItemLayout}>
-                <Button type="primary" htmlType="submit" onClick={submitForm}>Submit</Button>
+                <Button type="primary" htmlType="submit" loading={isSaving} onClick={submitForm}>Submit</Button>
             </Form.Item>
         </Form>
     )

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: innovation-ui-deployment
+spec:
+  selector:
+    matchLabels:
+      app: innovation-ui-pod
+  template:
+    metadata:
+      labels:
+        app: innovation-ui-pod
+    spec:
+      containers:
+        - name: innovation-ui-container
+          image: azdockeracr.azurecr.io/innovation-ui
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80

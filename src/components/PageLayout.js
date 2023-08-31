@@ -1,9 +1,10 @@
 import "../style/lighttheme.css"
 
 import React, { useState } from 'react';
-import { Button, Layout, Menu, theme, Card } from 'antd';
+import { Button, Layout, Menu, theme, Card, Switch, Space } from 'antd';
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from "@azure/msal-react";
 import { loginRequest } from "../authConfig";
+import { USER_THEMES } from "../config";
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -11,7 +12,9 @@ import {
     PlusSquareOutlined,
     UnorderedListOutlined,
     LoginOutlined,
-    PoweroffOutlined
+    PoweroffOutlined,
+    CheckOutlined,
+    CloseOutlined
 } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
@@ -19,9 +22,10 @@ const { Header, Sider, Content } = Layout;
 
 
 export const PageLayout = (props) => {
+    const { IsDarkTheme, setIsDarkTheme } = props;
     const { instance } = useMsal();
     const [collapsed, setCollapsed] = useState(false);
-    const { token: { colorBgContainer } } = theme.useToken();
+    const { token: { colorBgContainer, logoBackground } } = theme.useToken();
 
     const navigate = useNavigate();
 
@@ -45,8 +49,10 @@ export const PageLayout = (props) => {
 
     return (
         <Layout>
-            <Sider trigger={null} collapsible collapsed={collapsed}>
-                <div className="logo">
+            <Sider trigger={null} collapsible collapsed={collapsed} style={{
+                background: colorBgContainer,
+            }}>
+                <div className="logo" style={{ background: logoBackground }}>
                     <img src={window.location.origin + '/logo512.png'} alt="logo" />
                 </div>
                 <Menu
@@ -55,6 +61,9 @@ export const PageLayout = (props) => {
                     defaultSelectedKeys={['1']}
                     onClick={({ key }) => {
                         navigate(key);
+                    }}
+                    style={{
+                        background: colorBgContainer,
                     }}
                     items={[
                         {
@@ -93,37 +102,44 @@ export const PageLayout = (props) => {
                             height: 64,
                         }}
                     />
-                    <AuthenticatedTemplate>
-                        <div className='header-login-content'>
-                            <p>Hello, {activeAccount ? activeAccount.name : 'Unknown'}!</p>
-                            <Button
-                                type="text"
-                                icon={<PoweroffOutlined />}
-                                onClick={handleLogOutRedirect}
-                                style={{
-                                    fontSize: '16px',
-                                    width: 64,
-                                    height: 64,
-                                    color: 'red'
-                                }}
-                            />
-                        </div>
-                    </AuthenticatedTemplate>
-                    <UnauthenticatedTemplate>
-                        <div className='header-login-content'>
-                            <Button
-                                type="text"
-                                icon={<LoginOutlined />}
-                                onClick={handleLogin}
-                                style={{
-                                    fontSize: '16px',
-                                    width: 64,
-                                    height: 64,
-                                    float: 'right'
-                                }}
-                            />
-                        </div>
-                    </UnauthenticatedTemplate>
+
+                    <div className="header-login-content">
+                        <Space>
+                            <Switch size="small" checked={IsDarkTheme} checkedChildren={USER_THEMES.Dark}
+                                unCheckedChildren={USER_THEMES.Light} onChange={(checked) => setIsDarkTheme(checked)} />
+                            <AuthenticatedTemplate>
+                                <>
+                                    <p>Hello, {activeAccount ? activeAccount.name : 'Unknown'}!</p>
+                                    <Button
+                                        type="text"
+                                        icon={<PoweroffOutlined />}
+                                        onClick={handleLogOutRedirect}
+                                        style={{
+                                            fontSize: '16px',
+                                            width: 64,
+                                            height: 64,
+                                            color: 'red'
+                                        }}
+                                    />
+                                </>
+                            </AuthenticatedTemplate>
+                            <UnauthenticatedTemplate>
+                                <Button
+                                    type="text"
+                                    icon={<LoginOutlined />}
+                                    onClick={handleLogin}
+                                    style={{
+                                        fontSize: '16px',
+                                        width: 64,
+                                        height: 64,
+                                        float: 'right'
+                                    }}
+                                />
+                            </UnauthenticatedTemplate>
+                        </Space>
+                    </div>
+                    
+                    
 
                 </Header>
 

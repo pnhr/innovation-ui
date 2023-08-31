@@ -12,8 +12,8 @@ import { LogLevel } from "@azure/msal-browser";
  */
 export const msalConfig = {
     auth: {
-        clientId: "c0d7ede9-5b66-42d1-8ed6-f2a5d4b60031", // This is the ONLY mandatory field that you need to supply.
-        authority: "https://login.microsoftonline.com/8ef6e56f-9982-4070-9ce3-e340237b3f79", // Defaults to "https://login.microsoftonline.com/common"
+        clientId: "dfae71d5-e5b3-42b5-86a9-26156129ec92", // This is the ONLY mandatory field that you need to supply.
+        authority: "https://login.microsoftonline.com/5372b173-6565-4f3c-b9e6-1d6df2cd3697", // Defaults to "https://login.microsoftonline.com/common"
         redirectUri: "http://localhost:3000", // You must register this URI on Azure Portal/App Registration. Defaults to window.location.origin
         postLogoutRedirectUri: "/", // Indicates the page to navigate after logout.
         clientCapabilities: ["CP1"] // this lets the resource owner know that this client is capable of handling claims challenge.
@@ -59,7 +59,7 @@ export const protectedResources = {
     apiTodoList: {
         //endpoint: "https://20.121.76.152/api/Idea/getideas",
         scopes: {
-            read: ["api://6628fdfa-907b-485e-904f-f864fdab77be/App.Read"]
+            read: ["api://3fe6e46e-0a5c-4ddf-89d0-4b9d3b760071/App.Read"]
         }
     }
 }

@@ -7,6 +7,9 @@ import "./style/App.css";
 import { PageLayout } from "./components/PageLayout";
 import { CreateIdea } from "./pages/CreateIdea";
 import { ViewIdea } from "./pages/ViewIdea";
+import { ConfigProvider, theme } from "antd";
+import { USER_SETTINGS, USER_THEMES } from "./config"
+import { useState } from "react";
 
 const Pages = () => {
     return (
@@ -27,11 +30,48 @@ const Pages = () => {
  * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-react/docs/getting-started.md
  */
 const App = ({ instance }) => {
+    
+    const [IsDarkTheme, setIsDarkTheme] = useState(USER_SETTINGS.theme === USER_THEMES.Dark);
+
+    const getUserThemeSetting = () => {
+        if (IsDarkTheme)
+            return getDarkThemeSetting();
+        return getLightThemeSetting();
+    }
+
+    const getDarkThemeSetting = () => {
+        return {
+            algorithm: theme.darkAlgorithm,
+            token: {
+                logoBackground: '#FFFFFF'
+            }
+        }
+    }
+    const getLightThemeSetting = () => {
+        return {
+            algorithm: theme.compactAlgorithm,
+            token: {
+                logoBackground: '#000000'
+            }
+        }
+    }
+
     return (
         <MsalProvider instance={instance}>
-            <PageLayout>
-                <Pages />
-            </PageLayout>
+            <ConfigProvider
+                theme = {getUserThemeSetting()}
+                // theme={{
+                //     // algorithm: theme.compactAlgorithm
+                //     algorithm: [theme.darkAlgorithm, theme.compactAlgorithm],
+                //     token: {
+                //         logoBackground: '#000000'
+                //     }
+                // }}
+            >
+                <PageLayout IsDarkTheme={IsDarkTheme} setIsDarkTheme={setIsDarkTheme}>
+                    <Pages />
+                </PageLayout>
+            </ConfigProvider>
         </MsalProvider>
     );
 };

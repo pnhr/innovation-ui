@@ -4,6 +4,7 @@
  */
 
 import { LogLevel } from "@azure/msal-browser";
+import { PublicClientApplication, EventType } from "@azure/msal-browser";
 
 /**
  * Configuration object to be passed to MSAL instance on creation.
@@ -12,7 +13,7 @@ import { LogLevel } from "@azure/msal-browser";
  */
 export const msalConfig = {
     auth: {
-        clientId: "dfae71d5-e5b3-42b5-86a9-26156129ec92", // This is the ONLY mandatory field that you need to supply.
+        clientId: "a88808aa-47f4-4c40-a2e2-fd9919f718e4", // This is the ONLY mandatory field that you need to supply.
         authority: "https://login.microsoftonline.com/5372b173-6565-4f3c-b9e6-1d6df2cd3697", // Defaults to "https://login.microsoftonline.com/common"
         redirectUri: "http://localhost:3000", // You must register this URI on Azure Portal/App Registration. Defaults to window.location.origin
         postLogoutRedirectUri: "/", // Indicates the page to navigate after logout.
@@ -37,10 +38,10 @@ export const msalConfig = {
                         console.error(message);
                         return;
                     case LogLevel.Info:
-                        console.info(message);
+                        //console.info(message);
                         return;
                     case LogLevel.Verbose:
-                        console.debug(message);
+                        //console.debug(message);
                         return;
                     case LogLevel.Warning:
                         console.warn(message);
@@ -59,7 +60,7 @@ export const protectedResources = {
     apiTodoList: {
         //endpoint: "https://20.121.76.152/api/Idea/getideas",
         scopes: {
-            read: ["api://3fe6e46e-0a5c-4ddf-89d0-4b9d3b760071/App.Read"]
+            read: ["api://f8607680-8619-4ea3-acd2-e037fcf7237f/App.Read"]
         }
     }
 }
@@ -73,3 +74,29 @@ export const protectedResources = {
 export const loginRequest = {
     scopes: [...protectedResources.apiTodoList.scopes.read]
 };
+
+export const getMSALInstance = () => {
+    /**
+ * MSAL should be instantiated outside of the component tree to prevent it from being re-instantiated on re-renders.
+ * For more, visit: https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-react/docs/getting-started.md
+ */
+    const msalInstance = new PublicClientApplication(msalConfig);
+
+    // Default to using the first account if no account is active on page load
+    if (!msalInstance.getActiveAccount() && msalInstance.getAllAccounts().length > 0) {
+        // Account selection logic is app dependent. Adjust as needed for different use cases.
+        msalInstance.setActiveAccount(msalInstance.getAllAccounts()[0]);
+    }
+
+    // Optional - This will update account state if a user signs in from another tab or window
+    msalInstance.enableAccountStorageEvents();
+
+    // Listen for sign-in event and set active account
+    msalInstance.addEventCallback((event) => {
+        if (event.eventType === EventType.LOGIN_SUCCESS && event.payload.account) {
+            const account = event.payload.account;
+            msalInstance.setActiveAccount(account);
+        }
+    });
+    return msalInstance;
+}

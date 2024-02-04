@@ -4,8 +4,8 @@
     "description": "A React single-page application using MSAL React to call a protected web API on Azure Active Directory",
     "dependencies": {
         "@ant-design/icons": "^5.1.4",
-        "@azure/msal-browser": "~2.31.0",
-        "@azure/msal-react": "~1.4.10",
+        "@azure/msal-browser": "^3.7.1",
+        "@azure/msal-react": "^2.0.10",
         "antd": "^5.6.1",
         "react": "^18.1.0",
         "react-dom": "^18.1.0",

@@ -1,7 +1,9 @@
-import React from 'react'
+import React from 'react';
+import { Typography } from 'antd';
+const { Title } = Typography;
 
 export const ViewIdea = () => {
     return (
-        <div>ViewIdea</div>
+        <Title level={3}>View idea page is under construction</Title>
     )
 }
